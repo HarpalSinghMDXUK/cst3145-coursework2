@@ -151,7 +151,10 @@
             </div>
         </div> 
        <!-- {{sortedProducts}} -->
-       
+       <button @click="saveLessonToDB">
+            <span class="fas fa-save"></span>
+            Test Insert Data Lesson
+       </button>
     </div>
      
     <footer>
@@ -283,7 +286,37 @@
                     return
                     }
                 }
-            }
+            },
+            saveLessonToDB(){
+                const newLesson = {
+                        "id": 001,
+                        "subjectImg": "images/book-english.png",
+                        "subjectName": "English (New)",
+                        "location": "London",
+                        "price": 40,
+                        "spaces": 25,
+                        "currency": "£"
+                }
+
+                fetch("https://cst3145coursework2-env.eba-vqei52mg.us-east-1.elasticbeanstalk.com/collections/lessons",{
+                    method: "POST",
+                    headers:{
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(newLesson)
+                }).then(
+                function(response) {
+                        response.json().then(
+                            function(json){
+                                alert("Success: "+ json.acknowledged);
+                                console.log("Success: "+ json.acknowledged);
+
+                                MyStore.lessons.push(newLesson);
+                            }
+                        )
+                    }
+                );
+            },
         },
         computed: {
             // Counting Items Count next to Checkout 
