@@ -306,6 +306,11 @@
             SearchActivated: function() {
                 // Searching results visible true
                 this.SearchItemsView = true;
+                
+                if(this.SearchResultLesson == ""){
+                    this.SearchItemsView = false;
+                }
+
                 // 
                 fetch("https://cst3145coursework2-env.eba-vqei52mg.us-east-1.elasticbeanstalk.com/collections/lessons/search/"+this.SearchResultLesson).then(
                     function(response) {
