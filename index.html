@@ -27,7 +27,7 @@
                     <div class="navbar-nav " >
                     <a class="nav-item nav-link active" href="index.html">Home <span class="sr-only">(current)</span></a>
                     <!-- Search functionality -->
-                    <input type="text" placeholder="Search Lessons" class="form-control" v-model="SearchLesson" v-on:keyup="OnKeyUpSearchBar">
+                    <input type="text" placeholder="Search Lessons" class="form-control" v-model="SearchResultLesson" v-on:keyup="SearchActivated">
                     
                     <!-- checkout functionality -->
                     <button class="btn btn-default " @click="showCheckout">
@@ -186,11 +186,12 @@
         data:{
             // Show Lessons or Checkout Visibility
             showLessons: true,
-            SearchLesson:null,
+            SearchResultLesson:null,
             AppSetting:{
                 Title: "After School Classes App",
             },
             lessons: [],
+            searchResults: [],
             // Added Cart
             MyCart: {
                 count: 0,
@@ -260,7 +261,7 @@
                             "spaces": "1"
                         }
                         // // Adding Order into Database
-                        fetch("https://cst3145coursework2-env.eba-vqei52mg.us-east-1.elasticbeanstalk.com/collections/orders",{
+                        fetch("https://cst3145coursework2-env.eba-vqei52mg.us-east-1.elasticbeanstalk.com/collections/order",{
                             method: "POST",
                             headers:{
                                 "Content-Type": "application/json",
@@ -302,9 +303,20 @@
                 alert('Order submitted and user account has been registered, Successfully!');
             },
             // Search Keyup Function
-            OnKeyUpSearchBar: function() {
+            SearchActivated: function() {
                 // Searching results visible true
                 this.SearchItemsView = true;
+                // 
+                fetch("https://cst3145coursework2-env.eba-vqei52mg.us-east-1.elasticbeanstalk.com/collections/lessons/search/"+this.SearchResultLesson).then(
+                    function(response) {
+                        response.json().then(
+                            function(json) {
+                            MyStore.searchResults = json;
+                            // console.log(MyStore.searchResults);
+                            }
+                        )
+                    }
+                );
             },
             sortedProducts(sorted) {
                 // Sorting Lessons by Spaces Left
@@ -416,10 +428,10 @@
             },
             // Performing search filters in order to perform search
             FilterLessons(){
-                if (!this.SearchLesson) return this.lessons
-                let SearchLesson = this.SearchLesson.toLowerCase()
-                return this.lessons.filter(l => {
-                    return l.subjectName.toLowerCase().includes(SearchLesson)
+                if (!this.SearchResultLesson) return this.lessons
+                let SearchResultLesson = this.SearchResultLesson.toLowerCase()
+                return this.searchResults.filter(l => {
+                    return l.subjectName.toLowerCase().includes(SearchResultLesson)
                 })
             }
             
