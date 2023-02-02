@@ -229,11 +229,15 @@
         },
         methods: {           
             // Checkout Complete Alert
-            submitCheckoutFormx() {
-                console.log(this.checkoutOrder.name);
-                alert('Order submitted!');
-            },
             submitCheckoutForm(){
+                if (!this.checkoutOrder.phone || !this.users.email || !this.users.password || !this.checkoutOrder.name) {
+                    alert('Please make sure all fields are filled!');
+                    return;
+                }
+                if (this.MyCart.lessons.length === 0 || this.MyCart.lessons.length == null ) {
+                    alert('Cart is empty');
+                    return;
+                }
                 const newUser = {
                     "name": this.checkoutOrder.name,
                     "email": this.users.email,
@@ -247,9 +251,8 @@
                     },
                     body: JSON.stringify(newUser)
                 })
-                for (let i = 0; i < this.MyCart.lessons.length; i++) {
-                    
-                        
+
+                for (let i = 0; i < this.MyCart.lessons.length; i++) {       
                         const newOrder = {
                             "name": this.checkoutOrder.name,
                             "phone": this.checkoutOrder.phone,
@@ -273,7 +276,8 @@
                             // Getting Current Spaces Left from Lesson JSON Object
                             let obj = MyStore.lessons.filter(item => item.id === this.MyCart.lessons[i]);
                                 console.log(obj[0].spaces);
-
+                            
+                            // Updating Lesson Data
                             const newLessonData = {
                                 "id": MyStore.lessons.id,
                                 "subjectImg": obj[0].subjectImg,
@@ -283,7 +287,6 @@
                                 "spaces": obj[0].spaces,
                                 "currency": "£"
                             }
-                            console.log(newLessonData);
                             fetch("https://cst3145coursework2-env.eba-vqei52mg.us-east-1.elasticbeanstalk.com/collections/lessons/"+MyStore.lessons.id,{
                                 method: "PUT",
                                 headers:{
@@ -295,9 +298,8 @@
                             console.log("Not Matched");
                         }
 
-                }
-                                
-                // alert('Order submitted!');
+                }                                
+                alert('Order submitted and user account has been registered, Successfully!');
             },
             // Search Keyup Function
             OnKeyUpSearchBar: function() {
