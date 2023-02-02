@@ -126,20 +126,35 @@
 
                 
 <!-- ---------------------------- Checkout Page -->
-                <h1 class="text-center">Checkout Page</h1>
+                <h1 class="text-center">Register & Checkout Page</h1>
+
                 <p>
-                    <strong>Name:</strong>
-                    <input type="text" class="form-control" v-model.trim="checkoutOrder.name">
+                    <strong>Your Name:</strong>
+                    <input type="text" class="form-control" v-model.trim="checkoutOrder.name" required>
+                </p>
+                <p>
+                    <strong>email:</strong>
+                    <input type="text" class="form-control" v-model.trim="users.email" required>
+                </p>
+                <p>
+                    <strong>password:</strong>
+                    <input type="password" class="form-control" v-model.trim="users.password" required>
                 </p>
                 <p>
                     <strong>Phone:</strong>
-                    <input type="number" class="form-control" v-model="checkoutOrder.phone">
+                    <input type="number" class="form-control" v-model="checkoutOrder.phone" required>
                 </p>
                 <div style="background-color: #e7e7e7;padding:20px;">
                     <h2 class="text-center">Order Information</h2>
-                    
+
                     <p>
                         <strong>Name: {{checkoutOrder.name}}</strong>
+                    </p>
+                    <p>
+                        <strong>email: {{users.email}}</strong>
+                    </p>
+                    <p>
+                        <strong>password: {{users.password}}</strong>
                     </p>
                     <p>
                         <strong>Phone: {{checkoutOrder.phone}}</strong>
@@ -165,7 +180,6 @@
     </footer>
 
 
-
 <script>
     let MyStore = new Vue({
         el:"#MyApp",
@@ -185,7 +199,14 @@
             },
             checkoutOrder:{
                 name: "",
-                phone: 0
+                phone: 0,
+                lesson_id: 0,
+                spaces: 0
+            },
+            users:{
+                name: "",
+                password: "",
+                email: "",
             },
             // For Search Input `
             SearchItemsView: false,
@@ -206,7 +227,78 @@
                 }
             );
         },
-        methods: {
+        methods: {           
+            // Checkout Complete Alert
+            submitCheckoutFormx() {
+                console.log(this.checkoutOrder.name);
+                alert('Order submitted!');
+            },
+            submitCheckoutForm(){
+                const newUser = {
+                    "name": this.checkoutOrder.name,
+                    "email": this.users.email,
+                    "password": this.users.password
+                }
+                // // Adding new User
+                fetch("https://cst3145coursework2-env.eba-vqei52mg.us-east-1.elasticbeanstalk.com/collections/users",{
+                    method: "POST",
+                    headers:{
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(newUser)
+                })
+                for (let i = 0; i < this.MyCart.lessons.length; i++) {
+                    
+                        
+                        const newOrder = {
+                            "name": this.checkoutOrder.name,
+                            "phone": this.checkoutOrder.phone,
+                            "lesson_id": this.MyCart.lessons[i],
+                            "spaces": "1"
+                        }
+                        // // Adding Order into Database
+                        fetch("https://cst3145coursework2-env.eba-vqei52mg.us-east-1.elasticbeanstalk.com/collections/order",{
+                            method: "POST",
+                            headers:{
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(newOrder)
+                        })
+                        
+                        // Check Cart Item ID and Lessons ID matched - Updates Lessons
+                        if(MyStore.lessons.id = this.MyCart.lessons[i]){
+                            console.log(this.MyCart.lessons[i]);
+                            console.log(MyStore.lessons.id);
+
+                            // Getting Current Spaces Left from Lesson JSON Object
+                            let obj = MyStore.lessons.filter(item => item.id === this.MyCart.lessons[i]);
+                                console.log(obj[0].spaces);
+
+                            const newLessonData = {
+                                "id": MyStore.lessons.id,
+                                "subjectImg": obj[0].subjectImg,
+                                "subjectName": obj[0].subjectName,
+                                "location": obj[0].location,
+                                "price": obj[0].price,
+                                "spaces": obj[0].spaces,
+                                "currency": "£"
+                            }
+                            console.log(newLessonData);
+                            fetch("https://cst3145coursework2-env.eba-vqei52mg.us-east-1.elasticbeanstalk.com/collections/lessons/"+MyStore.lessons.id,{
+                                method: "PUT",
+                                headers:{
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify(newLessonData)
+                            })
+                        }else{
+                            console.log("Not Matched");
+                        }
+
+                }
+                                
+                // alert('Order submitted!');
+            },
             // Search Keyup Function
             OnKeyUpSearchBar: function() {
                 // Searching results visible true
@@ -239,6 +331,7 @@
             AddToCart: function (lesson) {
                 lesson.spaces -= 1;
                 this.MyCart.lessons.push(lesson.id);   
+                console.log(this.MyCart);
             },
             CartedItemSpacesCount(id) {
             let count = 0;
@@ -270,10 +363,6 @@
                     }
                 }
                 return count;
-            },
-            // Checkout Complete Alert
-            submitCheckoutForm() {
-                alert('Order submitted!');
             },
             // Removing Items From Cart 
             RemoveCartItem(lesson){
