@@ -19,7 +19,30 @@
 </head>
 <body>
     <div id="MyApp" v-cloak>
-<!-------- Header -->
+        <div class="container">
+            <div class="pwa-area " style="border:2px solid black; padding:2px;">
+                <button @click="saveLessonToDB">
+                    <span class="fas fa-save"></span>
+                    Test Insert Data Lesson
+               </button>
+               <button @click="DeleteAllCaches">
+                    <span class="fas fa-save"></span>
+                    Delete All Caches
+                </button>
+                <button @click="ReloadThisPage">
+                    <span class="fas fa-save"></span>
+                    Reload This Page
+                </button>
+                <span style="font-size: 20px;font-weight: 700;">HTTPS TEST: <a href="https://cst3145coursework2-env.eba-vqei52mg.us-east-1.elasticbeanstalk.com">Link</a> </span>
+                <button @click="resetServiceWorkers">
+                    <span class="fas fa-save"></span>
+                    Unregister all ServiceWorkers
+                </button>
+                
+        
+               </div>
+        </div>
+        <!-------- Header -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container">
                 <a class="navbar-brand" href="index.html"><h3 v-text="AppSetting.Title"></h3></a>
@@ -166,10 +189,7 @@
             </div>
         </div> 
        <!-- {{sortedProducts}} -->
-       <button @click="saveLessonToDB">
-            <span class="fas fa-save"></span>
-            Test Insert Data Lesson
-       </button>
+       
     </div>
      
     <footer>
