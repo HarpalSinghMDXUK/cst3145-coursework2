@@ -237,6 +237,12 @@
             sorted: ''
         },
         created: function() {
+        
+            // Service Worker CW3
+            if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("service-worker.js");
+            
+
             fetch("https://cst3145coursework2-env.eba-vqei52mg.us-east-1.elasticbeanstalk.com/collections/lessons").then(
                 function(response) {
                     response.json().then(
@@ -251,6 +257,7 @@
                 }
             );
         },
+        
         methods: {           
             // Checkout Complete Alert
             submitCheckoutForm(){
