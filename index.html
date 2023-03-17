@@ -23,7 +23,11 @@
 <body>
     <div id="MyApp" v-cloak>
         <div class="container">
-            <div class="pwa-area " style="border:2px solid black; padding:2px;">
+            <button v-if="testConsole" @click="toggleShowTestConsole">
+                <span class="fas fa-save"></span>
+                Show/Hide Test Console
+            </button>
+            <div v-if="testConsole && ShowTestConsole" class="pwa-area " style="border:2px solid black; padding:2px;">
                 <button @click="saveLessonToDB">
                     <span class="fas fa-save"></span>
                     Test Insert Data Lesson
@@ -214,9 +218,11 @@
             AppSetting:{
                 Title: "After School Classes App",
             },
-            // lessons: [],
-            lessons: lessons,
+            lessons: [],
+            // lessons: lessons,
             searchResults: [],
+            testConsole: true,
+            ShowTestConsole: false,
             // serverURL:"http://localhost:3000/collections/lessons",
             serverURL:"https://cst3145coursework2-env.eba-vqei52mg.us-east-1.elasticbeanstalk.com/collections/lessons",
             // Added Cart
@@ -246,32 +252,35 @@
                 navigator.serviceWorker.register("service-worker.js");
                 }
 
-            fetch(this.serverURL).then(
-                function(response) {
-                    response.text().then(
-                        function(text) {
-                        // MyStore.lessons = json;
-                        alert(text);
-                        }
-                    )
-                }
-            );
-
             // fetch(this.serverURL).then(
             //     function(response) {
-            //         response.json().then(
-            //             function(json) {
-            //             // note that we used ‘webstore.lessons’
-            //             // instead of 'this.lessons’
-            //             // alert(json);
-            //             MyStore.lessons = json;
-            //             console.log(lessons);
+            //         response.text().then(
+            //             function(text) {
+            //             // MyStore.lessons = json;
+            //             alert(text);
             //             }
             //         )
             //     }
             // );
+
+            fetch(this.serverURL).then(
+                function(response) {
+                    response.json().then(
+                        function(json) {
+                        // note that we used ‘webstore.lessons’
+                        // instead of 'this.lessons’
+                        // alert(json);
+                        MyStore.lessons = json;
+                        // console.log(lessons);
+                        }
+                    )
+                }
+            );
         },
         methods: {   
+            toggleShowTestConsole(){
+                this.ShowTestConsole = !this.ShowTestConsole;
+            },
             reloadPage() {
                 window.location.reload();
             }, 
@@ -283,7 +292,7 @@
                 });
                 console.log("ServiceWorkers Unregistered");
             },   
-            deleteAllCaches() {
+            DeleteAllCaches() {
                 caches.keys().then(function (names) {
                     for (let name of names)
                         caches.delete(name);
