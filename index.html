@@ -213,8 +213,11 @@
             AppSetting:{
                 Title: "After School Classes App",
             },
-            lessons: [],
+            // lessons: [],
+            lessons: lessons,
             searchResults: [],
+            serverURL:"http://localhost:3000/collections/lessons",
+            // serverURL:"https://cst3145coursework2-env.eba-vqei52mg.us-east-1.elasticbeanstalk.com/collections/lessons",
             // Added Cart
             MyCart: {
                 count: 0,
@@ -242,19 +245,30 @@
                 navigator.serviceWorker.register("service-worker.js");
                 }
 
-            fetch("https://cst3145coursework2-env.eba-vqei52mg.us-east-1.elasticbeanstalk.com/collections/lessons").then(
+            fetch(this.serverURL).then(
                 function(response) {
-                    response.json().then(
-                        function(json) {
-                        // note that we used ‘webstore.lessons’
-                        // instead of 'this.lessons’
-                        // alert(json);
-                        MyStore.lessons = json;
-                        console.log(lessons);
+                    response.text().then(
+                        function(text) {
+                        // MyStore.lessons = json;
+                        alert(text);
                         }
                     )
                 }
             );
+
+            // fetch(this.serverURL).then(
+            //     function(response) {
+            //         response.json().then(
+            //             function(json) {
+            //             // note that we used ‘webstore.lessons’
+            //             // instead of 'this.lessons’
+            //             // alert(json);
+            //             MyStore.lessons = json;
+            //             console.log(lessons);
+            //             }
+            //         )
+            //     }
+            // );
         },
         methods: {           
             // Checkout Complete Alert
@@ -434,7 +448,7 @@
                         "currency": "£"
                 }
 
-                fetch("https://cst3145coursework2-env.eba-vqei52mg.us-east-1.elasticbeanstalk.com/collections/lessons",{
+                fetch(this.serverURL,{
                     method: "POST",
                     headers:{
                         "Content-Type": "application/json",
