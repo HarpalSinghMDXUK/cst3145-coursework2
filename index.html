@@ -36,7 +36,8 @@
                     <span class="fas fa-save"></span>
                     Reload This Page
                 </button>
-                <span style="font-size: 20px;font-weight: 700;">HTTPS TEST: <a href="https://cst3145coursework2-env.eba-vqei52mg.us-east-1.elasticbeanstalk.com">Link</a> </span>
+
+                <span class="test-elem" style="font-size: 20px;font-weight: 700;">HTTPS TEST: <a v-bind:href="serverURL" target="_blank">Link</a> </span>
                 <button @click="resetServiceWorkers">
                     <span class="fas fa-save"></span>
                     Unregister all ServiceWorkers
@@ -271,6 +272,13 @@
             // );
         },
         methods: {           
+            deleteAllCaches() {
+                caches.keys().then(function (names) {
+                    for (let name of names)
+                        caches.delete(name);
+                });
+                console.log("All Caches Deleted");
+            },
             // Checkout Complete Alert
             submitCheckoutForm(){
                 if (!this.checkoutOrder.phone || !this.users.email || !this.users.password || !this.checkoutOrder.name) {
