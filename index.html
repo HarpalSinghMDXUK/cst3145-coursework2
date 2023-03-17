@@ -237,9 +237,8 @@
             sorted: ''
         },
         created: function() {
-        
-            // Service Worker CW3
-            if ("serviceWorker" in navigator) {
+              // Service Worker CW3
+              if ("serviceWorker" in navigator) {
             navigator.serviceWorker.register("service-worker.js");
             }
 
@@ -257,7 +256,6 @@
                 }
             );
         },
-        
         methods: {           
             // Checkout Complete Alert
             submitCheckoutForm(){
