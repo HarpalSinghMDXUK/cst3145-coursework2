@@ -32,13 +32,13 @@
                     <span class="fas fa-save"></span>
                     Delete All Caches
                 </button>
-                <button @click="ReloadThisPage">
+                <button @click="reloadPage">
                     <span class="fas fa-save"></span>
                     Reload This Page
                 </button>
 
                 <span class="test-elem" style="font-size: 20px;font-weight: 700;">HTTPS TEST: <a v-bind:href="serverURL" target="_blank">Link</a> </span>
-                <button @click="resetServiceWorkers">
+                <button @click="unregisterAllServiceWorkers">
                     <span class="fas fa-save"></span>
                     Unregister all ServiceWorkers
                 </button>
@@ -271,7 +271,18 @@
             //     }
             // );
         },
-        methods: {           
+        methods: {   
+            reloadPage() {
+                window.location.reload();
+            }, 
+            unregisterAllServiceWorkers() {
+                navigator.serviceWorker.getRegistrations().then(function (registrations) {
+                    for (let registration of registrations) {
+                        registration.unregister()
+                    }
+                });
+                console.log("ServiceWorkers Unregistered");
+            },   
             deleteAllCaches() {
                 caches.keys().then(function (names) {
                     for (let name of names)
@@ -475,9 +486,6 @@
                     }
                 );
             },
-            DeleteAllCaches(){},
-            ReloadThisPage(){},
-            resetServiceWorkers(){},
         },
         computed: {
             // Counting Items Count next to Checkout 
