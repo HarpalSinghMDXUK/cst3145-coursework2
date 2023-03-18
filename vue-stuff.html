@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>After School - Class Booking</title>
+
+
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="manifest" href="mystore.webmanifest">
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Using Font Awesome -->
+    <script src="https://kit.fontawesome.com/f0b3749e54.js" crossorigin="anonymous"></script>
+    <!-- Using Vue 2 -->
+    <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
+    <!-- Import Lesson.js -->
+    <script src="lessons.js"></script>
+
+</head>
+
+<body>
+
+    <div id="app">
+        <my-global-component></my-global-component>
+        <comp-root>
+            <div slot="header"><comp-header /></div>
+            <div><comp-main /></div>
+            <div slot="footer"><comp-footer /></div>
+        </comp-root>
+    </div>
+
+    <div id="app2">
+        <my-global-component></my-global-component>
+        <my-component text="World"></my-component>
+        <my-component :text="message"></my-component>
+    </div>
+    <div id="app3">
+        <my-component-two :num="myNumber" :str="passedString"></my-component-two>
+    </div>
+
+    <div id="app4">
+        <my-component-now :text="message"></my-component>
+    </div>
+    <div id="app5">
+        <!-- Components and Shared Data: Solution -->
+
+        <my-component-fifth></my-component-fifth>
+        <my-component-fifth></my-component-fifth>
+        <my-component-fifth></my-component-fifth>
+    </div>
+    <div id="app6">
+        <my-component-sixth :counter="counter" @increment-me="incrementCounter" />
+        <my-component-sixth :counter="counter" @increment-me="incrementCounter" />
+    </div>
+
+
+
+    <script>
+        
+    </script>
+    <script>
+        const MyComponentSixth = {
+            props: ["counter"],
+            template: `<div><button @click="triggerIncrement">{{counter}}</button></div>`,
+            methods: {
+                triggerIncrement() { this.$emit("increment-me"); }
+            }
+        }
+        let vuecomponentsapp = new Vue({
+            el: "#app6",
+            data() { return { counter: 0, } },
+            components: { "my-component-sixth": MyComponentSixth },
+            methods: {
+                incrementCounter() { this.counter++; }
+            }
+        });
+    </script>
+    <script>
+        const MyComponentFifth = {
+            template: `<div><button @click="counter+=1">{{counter}}</button></div>`,
+            data() { return { counter: 0 }; }
+        }
+        new Vue({
+            el: "#app5",
+            components: { 'my-component-fifth': MyComponentFifth },
+        });
+    </script>
+    <script>
+        // 5th
+        // Internal Data Management with Data Function
+
+        const MyComponentNow = {
+            props: ["text"],
+            data() {
+                return { test1: "Testing text" }
+            },
+            template: `<div>Hello {{text}}! {{test1}}</div>`,
+        }
+        new Vue({
+            el: "#app4",
+            components: { 'my-component-now': MyComponentNow },
+            data() {
+                return { message: "From Parent Component!" }
+            }
+        });
+    </script>
+    <script>
+        const CompRoot = {
+            template: `<div class="container">
+                    <div>I am the container</div>
+                    <header>
+                    <slot name="header"></slot>
+                    </header>
+                    <main>
+                    <slot></slot>
+                    </main>
+                    <footer>
+                    <slot name="footer"></slot>
+                    </footer>
+                    </div>`
+        };
+        const CompHeader = {
+            template: "<div>I am the Header Component</div>"
+        }
+        const CompMain = {
+            template: "<div>I am the Main Component</div>"
+        }
+        const CompFooter = {
+            template: "<div>I am the Footer Component</div>"
+        }
+
+        // Global Component
+Vue.component("my-global-component", {
+            template: `<div>
+            <p>i Am Global Component can be use any of application</p>
+            </div>`
+        });
+        
+        let vuecompapp = new Vue({
+            el: "#app",
+            components: {
+                "comp-root": CompRoot,
+                "comp-header": CompHeader,
+                "comp-main": CompMain,
+                "comp-footer": CompFooter,
+            }
+        });
+
+        const MyComponent = {
+            props: ['text'], // declare the props
+            template: `<div>Hello {{text}}! </div>`, // use the props in component
+        }
+
+
+
+        new Vue({
+            el: "#app2",
+            components: { 'my-component': MyComponent },
+            data: {
+                message: "From Parent Component!"
+            }
+        });
+        //         [Literal Props] are plain strings that can be passed to a component
+        // • Similar to adding an attribute to an HTML element
+        //         For literal props, the prop value is static, i.e. does not change
+        // • For example, the value of the text prop will always be 'World'
+        // [Dynamic Props] are props that are passed in from the parent that are bound to a property that can
+        // change
+        // • We use v-bind to bind a Vue data property to a component prop
+        const MyComponent2 = {
+            template: `<div>Number: {{num}}, String: {{str}}</div>`
+            ,
+            props: {
+                num: { type: Number, required: true },
+                str: { type: String, default: "Hello World" },
+            }
+        }
+
+        //         [Props Validation] Vue has the following data type checks: String, Number, Boolean, Function,
+        // Object, Array, Symbol
+        // • It can also specify: the default value for a prop; whether a prop must have a value
+        new Vue({
+            el: '#app3',
+            components: { 'my-component-two': MyComponent2 },
+            data: {
+                passedString: 'Hello From Parent!',
+                myNumber: 43,
+            }
+        });
+    </script>
+</body>
+
+</html>
